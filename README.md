@@ -37,7 +37,7 @@ Support
 --------------------------
 How could a user contact you?
 
-https://github.com/your/repository/issues
+https://github.com/jpvlsmv/splunk-viz-forcemap2/issues
 
 Credits
 --------------------------
