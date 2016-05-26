@@ -38,5 +38,5 @@ export = system
 
 # Un-comment the stanza below to make the standin visualization available to all apps.
 # FIXME: rename
-[visualizations/splunk-viztemplate]
+[visualizations/forcemap2]
 export = system

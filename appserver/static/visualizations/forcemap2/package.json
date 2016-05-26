@@ -1,16 +1,14 @@
 {
-  "FIXME": "change the name, version, and description",
-  "name": "splunk-viztemplate",
-  "version": "0.0.0",
-  "description": "Visualization app template. Put a description here.",
+  "name": "forcemap2",
+  "version": "0.1.0",
+  "description": "Second revision of forcemap code",
   "main": "visualization.js",
   "scripts": {
     "build": "node ./node_modules/webpack/bin/webpack.js",
     "devbuild": "node ./node_modules/webpack/bin/webpack.js --progress",
     "watch": "node ./node_modules/webpack/bin/webpack.js -d --watch --progress"
   },
-  "FIXME": "change author",
-  "author": "template",
+  "author": "Joe Moore",
   "license": "MIT",
   "devDependencies": {
     "webpack": "^1.12.6"

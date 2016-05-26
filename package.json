@@ -1,13 +1,11 @@
 {
-  "TODO": "change the name/version"
-  "name": "viz_tutorial_app",
-  "version": "1.0.0",
+  "name": "forcemap2",
+  "version": "0.1.0",
   "scripts": {
     "list_viz": "node ./node_modules/splunk_viz_tasks list_app_viz",
     "build_viz": "node ./node_modules/splunk_viz_tasks build_app_viz"
   },
-  "TODO": "change the author"
-  "author": "Splunk",
+  "author": "Joe Moore",
   "license": "MIT",
   "devDependencies": {
     "splunk_viz_tasks": "https://github.com/magnew/splunk_viz_tasks.git"
