@@ -5,15 +5,17 @@ define([
             'jquery',
             'underscore',
             'vizapi/SplunkVisualizationBase',
-            'vizapi/SplunkVisualizationUtils'
-            // FIXME: Add required assets to this list
+            'vizapi/SplunkVisualizationUtils',
+            // Add required assets to this list
+	    'd3'
         ],
         function(
             $,
             _,
             SplunkVisualizationBase,
-            vizUtils
-            // FIXME: Add required assets to this list.  Must be in the same order as above
+            vizUtils,
+            // Add required assets to this list.  Must be in the same order as above
+	    d3
         ) {
   
     // Extend from SplunkVisualizationBase
@@ -23,13 +25,23 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.$el = $(this.el);
 
-	    // FIXME: change class name
-	    this.$el.addClass( 'splunk-viztemplate' );
+	    $(this.el).empty();
+	    $(this.el).addClass( 'viz-forcemap' );
 
-            this.$el.append('<h3>This is a custom visualization stand in.</h3>');
-            this.$el.append('<p>Edit your custom visualization app to render something here.</p>');
+	    this.$svg = $(this.el).append("svg");
 
-            // FIXME: Initialization logic goes here
+            // Initialization logic goes here
+
+	    this.width = this.$el.width();
+	    this.height = this.$el.height();
+
+
+	    this.forcelayout = d3.layout.force()
+		    .size([this.width, this.height])
+		    .charge(-120)
+                    .linkDistance(30)
+		    .start();
+
         },
 
         // Optionally implement to format data returned from search. 
@@ -51,13 +63,13 @@ define([
 	    // myoption = config['display.visualizations.custom.splunk-viztemplate.working'];
 
             // Draw something here
+	    //this.forcelayout.
 
         },
 
         // Search data params
         getInitialDataParams: function() {
             return ({
-	        // TODO: Do you want your data in JSON?
                 outputMode: SplunkVisualizationBase.RAW_OUTPUT_MODE,
                 count: 10000
             });
@@ -65,7 +77,16 @@ define([
 
         // Override to respond to re-sizing events
         reflow: function() {
-	    // TODO: Update based on this.$el.width() and .height()
+	    this.width = this.$el.width();
+	    this.height = this.$el.height();
+            console.log("Reflow to ",this.width, " x ", this.height);
+	    console.log("svg is ", JSON.stringify(this.$svg));
+
+            this.$svg.width(this.width);
+            this.$svg.height(this.height);
+
+//	    this.forcelayout.size([ this.width, this.height])
+//                            .start();
 	}
     });
 });
