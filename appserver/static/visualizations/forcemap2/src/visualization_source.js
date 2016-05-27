@@ -7,7 +7,7 @@ define([
             'vizapi/SplunkVisualizationBase',
             'vizapi/SplunkVisualizationUtils',
             // Add required assets to this list
-	    'd3'
+	    'd3-force'
         ],
         function(
             $,
@@ -15,7 +15,7 @@ define([
             SplunkVisualizationBase,
             vizUtils,
             // Add required assets to this list.  Must be in the same order as above
-	    d3
+	    d3_force
         ) {
   
     // Extend from SplunkVisualizationBase
@@ -25,23 +25,33 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.$el = $(this.el);
 
-	    $(this.el).empty();
-	    $(this.el).addClass( 'viz-forcemap' );
-
-	    this.$svg = $(this.el).append("svg");
-
-            // Initialization logic goes here
+	    this.$el.empty();
+	    this.$el.addClass( 'viz-forcemap' );
 
 	    this.width = this.$el.width();
 	    this.height = this.$el.height();
 
+	    this.$svg = $("<svg></svg>")
+					.addClass("forcemap2-viz")
+					.attr("width",this.width)
+					.attr("height",this.height);
 
-	    this.forcelayout = d3.layout.force()
-		    .size([this.width, this.height])
-		    .charge(-120)
-                    .linkDistance(30)
-		    .start();
+	    $(this.el).append(this.$svg);
 
+            // Initialization logic goes here
+        },
+
+        // Search data params
+        getInitialDataParams: function() {
+            return ({
+                outputMode: SplunkVisualizationBase.RAW_OUTPUT_MODE,
+                count: 10000
+            });
+        },
+
+
+	onConfigChange: function(config) { 
+	    // TODO: update settings when the user options change
         },
 
         // Optionally implement to format data returned from search. 
@@ -52,6 +62,8 @@ define([
 
             return data;
         },
+
+	setupView: function() { },
   
         // Implement updateView to render a visualization.
         //  'data' will be the data object returned from formatData or from the search
@@ -67,26 +79,12 @@ define([
 
         },
 
-        // Search data params
-        getInitialDataParams: function() {
-            return ({
-                outputMode: SplunkVisualizationBase.RAW_OUTPUT_MODE,
-                count: 10000
-            });
-        },
-
         // Override to respond to re-sizing events
         reflow: function() {
 	    this.width = this.$el.width();
 	    this.height = this.$el.height();
             console.log("Reflow to ",this.width, " x ", this.height);
-	    console.log("svg is ", JSON.stringify(this.$svg));
 
-            this.$svg.width(this.width);
-            this.$svg.height(this.height);
-
-//	    this.forcelayout.size([ this.width, this.height])
-//                            .start();
 	}
     });
 });
