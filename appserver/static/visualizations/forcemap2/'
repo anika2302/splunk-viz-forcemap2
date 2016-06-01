@@ -7,7 +7,6 @@ define([
             'vizapi/SplunkVisualizationBase',
             'vizapi/SplunkVisualizationUtils',
             // Add required assets to this list
-	    'd3',
 	    'd3-force'
         ],
         function(
@@ -16,7 +15,6 @@ define([
             SplunkVisualizationBase,
             vizUtils,
             // Add required assets to this list.  Must be in the same order as above
-	    d3,
 	    d3_force
         ) {
   
@@ -66,12 +64,8 @@ define([
         },
 
 	setupView: function() { 
-		this.$linkforces = d3.forcelink()
-		                     .id(function(d) { return d.id; })
-				     .strength(function(d){return d.weight});
-
 		this.$forcemap = d3.forceSimulation()
-		                   .force("link", this.$linkforces)
+		                   .force("link", d3.forceLink().id(function(d) { return d.id; }))
 				   .force("charge", d3.forceManyBody())
 				   .force("center", d3.forceCenter(this.width/2,this.height/2));
 	},
@@ -80,45 +74,21 @@ define([
         //  'data' will be the data object returned from formatData or from the search
         //  'config' will be the configuration property object
         updateView: function(data, config) {
-	    console.log("Updating view ", JSON.stringify(data), JSON.stringify(config));
-
-	    data.results.forEach( function(elem, idx, array ) {
-	        console.log("Looking at ", JSON.stringify(elem));
-		// The parent image is the link's source
-		var srcId = this.$forcemap.nodes().map(
-		                function(e) { 
-				    return e["ParentImage"]; 
-				}).indexOf(elem["ParentImage"]);
-		// If we haven't seen the name before, add it
-		if (srcId == -1) { 
-		    srcId = this.$forcemap.nodes().
-		                push({"id": elem["ParentImage"]});
-		}
-
-		// The Image is the link's target
-		var tgtId = this.$forcemap.nodes().map(
-		                function(e) { 
-				    return e["Image"]; 
-				}).indexOf(elem["Image"]);
-		// If we haven't seen the name before, add it
-		if (tgtId == -1) {
-		    tgtId = this.$forcemap.nodes()
-		                .push({"id": elem["Image"]});}
-
-		this.$linkforces.links().push({"source": elem["ParentImage"], "target": elem["Image"], "weight": elem["count"]});
-		//this.$forcemap.
-
-		console.log( "Found link ", srcId, " -> ", tgtId);
-	    }, this);
-	    console.log("nodes: ", JSON.stringify(this.$forcemap.nodes()));
-	    console.log("links: ", JSON.stringify(this.$linkforces.links()));
-	    return;
-
 	    var link = this.$svg.append("g")
 	                   .attr("class", "links")
       		           .selectAll("line")
 		           // TODO: ??? .data(graph.links)
 		           .enter().append("line");
+	    var node = this.$svg.append("g")
+	                        .attr("class", "nodes")
+				.selectAll("circle")
+				// TODO: ??? .data(graph.nodes)
+				.enter().append("circle")
+				               .attr("r", 2.5)
+					       .call(d3.drag()
+					             .on("start", dragstarted)
+						     .on("drag", dragged)
+						     .on("end", dragended));
 
             node.append("title")
 	        .text(function(d) { return d.id });
