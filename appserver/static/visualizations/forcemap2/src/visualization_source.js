@@ -66,7 +66,9 @@ define([
         },
 
 	setupView: function() { 
-		this.$linkforces = d3.forcelink()
+		this.$nodes = [];
+		this.$links = [];
+		this.$linkforces = d3.forceLink()
 		                     .id(function(d) { return d.id; })
 				     .strength(function(d){return d.weight});
 
@@ -85,61 +87,55 @@ define([
 	    data.results.forEach( function(elem, idx, array ) {
 	        console.log("Looking at ", JSON.stringify(elem));
 		// The parent image is the link's source
-		var srcId = this.$forcemap.nodes().map(
+		var srcId = this.$nodes.map(
 		                function(e) { 
 				    return e["ParentImage"]; 
 				}).indexOf(elem["ParentImage"]);
 		// If we haven't seen the name before, add it
 		if (srcId == -1) { 
-		    srcId = this.$forcemap.nodes().
-		                push({"id": elem["ParentImage"]});
+		    srcId = this.$nodes
+		                .push({"id": elem["ParentImage"]});
 		}
 
 		// The Image is the link's target
-		var tgtId = this.$forcemap.nodes().map(
+		var tgtId = this.$nodes.map(
 		                function(e) { 
 				    return e["Image"]; 
 				}).indexOf(elem["Image"]);
 		// If we haven't seen the name before, add it
 		if (tgtId == -1) {
-		    tgtId = this.$forcemap.nodes()
+		    tgtId = this.$nodes
 		                .push({"id": elem["Image"]});}
 
-		this.$linkforces.links().push({"source": elem["ParentImage"], "target": elem["Image"], "weight": elem["count"]});
-		//this.$forcemap.
+		this.$links.push({
+		     "source": elem["ParentImage"], 
+		     "target": elem["Image"], 
+		     "weight": elem["count"]});
 
-		console.log( "Found link ", srcId, " -> ", tgtId);
 	    }, this);
-	    console.log("nodes: ", JSON.stringify(this.$forcemap.nodes()));
-	    console.log("links: ", JSON.stringify(this.$linkforces.links()));
+
+	    this.$linkforces.links(this.$links);
+	    this.$forcemap.nodes(this.$nodes)
+	                  .force("link", this.$linkforces)
+			  .restart();
+
+	    var l = this.$svg.append("g")
+	             .attr("class", "links")
+		     .selectAll("line")
+		     .data(this.$linkforces.links())
+		     .enter().append("line");
+
+	    var n = this.$svg.append("g")
+	             .attr("class", "nodes")
+		     .selectAll("circle")
+		     .data(this.$forcemap.nodes())
+		     .enter().append("circle")
+		                     .attr("r", "2.5")
+				     .call(d3.drag()
+				             .on("start", dragstarted)
+					     .on("drag",  dragged)
+					     .on("end",   dragended));
 	    return;
-
-	    var link = this.$svg.append("g")
-	                   .attr("class", "links")
-      		           .selectAll("line")
-		           // TODO: ??? .data(graph.links)
-		           .enter().append("line");
-
-            node.append("title")
-	        .text(function(d) { return d.id });
-
-	    simulation
-	        .nodes(graph.nodes)
-		.on("tick", ticked);
-	    simulation.force("link")
-	        .links(graph.links);
-
-            function ticked() {
-	        link
-		    .attr("x1", function(d) { return d.source.x; })
-		    .attr("y1", function(d) { return d.source.y; })
-		    .attr("x2", function(d) { return d.target.x; })
-		    .attr("y2", function(d) { return d.target.y; });
-
-		node
-		    .attr("cx", function(d) { return d.x; })
-		    .attr("cy", function(d) { return d.y; });
-	     }
 
 	     function dragstarted(d) {
 	         if (!d3.event.active) simulation.alphaTarget(0.3).restart()
