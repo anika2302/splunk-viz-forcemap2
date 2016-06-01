@@ -119,22 +119,22 @@ define([
 	                  .force("link", this.$linkforces)
 			  .restart();
 
-	    var l = this.$svg.append("g")
-	             .attr("class", "links")
-		     .selectAll("line")
-		     .data(this.$linkforces.links())
-		     .enter().append("line");
+	    //var l = this.$svg.append("g")
+	             //.attr("class", "links")
+		     //.selectAll("line")
+		     //.data(this.$linkforces.links())
+		     //.enter().append("line");
 
-	    var n = this.$svg.append("g")
-	             .attr("class", "nodes")
-		     .selectAll("circle")
-		     .data(this.$forcemap.nodes())
-		     .enter().append("circle")
-		                     .attr("r", "2.5")
-				     .call(d3.drag()
-				             .on("start", dragstarted)
-					     .on("drag",  dragged)
-					     .on("end",   dragended));
+	    //var n = this.$svg.append("g")
+	             //.attr("class", "nodes")
+		     //.selectAll("circle")
+		     //.data(this.$forcemap.nodes())
+		     //.enter().append("circle")
+		                     //.attr("r", "2.5")
+				     //.call(d3.drag()
+				             //.on("start", dragstarted)
+					     //.on("drag",  dragged)
+					     //.on("end",   dragended));
 	    return;
 
 	     function dragstarted(d) {
