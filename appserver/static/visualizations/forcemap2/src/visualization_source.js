@@ -27,18 +27,18 @@ define([
             SplunkVisualizationBase.prototype.initialize.apply(this, arguments);
             this.$el = $(this.el);
 
-	    this.$el.empty();
-	    this.$el.addClass( 'viz-forcemap' );
+	    $(this.$el).empty();
+	    $(this.$el).addClass( 'viz-forcemap' );
 
-	    this.width = this.$el.width();
-	    this.height = this.$el.height();
+	    this.width = $(this.$el).width();
+	    this.height = $(this.$el).height();
 
-	    this.$svg = $("<svg></svg>")
-					.addClass("forcemap2-viz")
-					.attr("width",this.width)
-					.attr("height",this.height);
+	    svg = $("svg")
+		.addClass("forcemap2-viz")
+		.attr("width",this.width)
+		.attr("height",this.height);
 
-	    $(this.el).append(this.$svg);
+	    this.$svg = $(this.el).append(svg);
 
             // Initialization logic goes here
         },
@@ -157,10 +157,10 @@ define([
         reflow: function() {
 	    this.width = this.$el.width();
 	    this.height = this.$el.height();
-            console.log("Reflow to ",this.width, " x ", this.height);
 
 	    this.$svg.width(this.width)
 	             .height(this.height);
+            console.log("Reflow to ",this.width, " x ", this.height);
 	}
     });
 });
